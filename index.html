@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCENE-grid</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══ WELCOME ═══════════════════════════════════════════ -->
+<section id="welcome">
+
+  <div class="w-lang">
+    <div class="lang-wrap">
+      <button class="lang-btn"><span class="l-label">한국어</span> ▾</button>
+      <ul class="lang-menu">
+        <li><button class="lang-opt" data-l="ko">한국어</button></li>
+        <li><button class="lang-opt" data-l="en">English</button></li>
+        <li><button class="lang-opt" data-l="ja">日本語</button></li>
+      </ul>
+    </div>
+  </div>
+
+  <h1 class="w-wordmark t1">SCENE-grid</h1>
+  <p  class="w-desc t2" data-tpre="sub"></p>
+
+  <div class="w-actions t3">
+    <button id="btnLaunch" class="btn btn-accent w-start" data-t="launch">시작하기</button>
+  </div>
+
+  <div class="w-note t4" data-th="note"></div>
+
+</section>
+
+<!-- ══ WORKSPACE ══════════════════════════════════════════ -->
+<div id="workspace" style="display:none">
+
+  <header class="topbar">
+    <div class="tb-left">
+      <span class="tb-name">SCENE-grid</span>
+      <span class="tb-step">—</span>
+    </div>
+    <div class="lang-wrap">
+      <button class="lang-btn"><span class="l-label">한국어</span> ▾</button>
+      <ul class="lang-menu">
+        <li><button class="lang-opt" data-l="ko">한국어</button></li>
+        <li><button class="lang-opt" data-l="en">English</button></li>
+        <li><button class="lang-opt" data-l="ja">日本語</button></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- Phase 1 -->
+    <section id="phase1" class="phase on">
+      <div class="ph">
+        <div class="ph-title" data-t="p1.title">그리드 구성</div>
+        <div class="ph-desc"  data-t="p1.desc"></div>
+      </div>
+
+      <div class="dim-bar">
+        <div class="dim-unit">
+          <span class="label" data-t="p1.rows">세로</span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <select id="rowSel" class="ctrl">
+              <option>1</option><option>2</option><option>3</option><option>4</option>
+              <option selected>5</option><option>6</option><option>7</option>
+              <option>8</option><option>9</option><option>10</option>
+              <option value="other" data-t="p1.more">직접 입력</option>
+            </select>
+            <input id="rowN" class="ctrl" type="number" min="1" max="30" placeholder="–" hidden>
+          </div>
+        </div>
+        <span class="dim-sep">×</span>
+        <div class="dim-unit">
+          <span class="label" data-t="p1.cols">가로</span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <select id="colSel" class="ctrl">
+              <option>1</option><option>2</option><option>3</option>
+              <option selected>4</option><option>5</option><option>6</option>
+              <option>7</option><option>8</option>
+              <option value="other" data-t="p1.more">직접 입력</option>
+            </select>
+            <input id="colN" class="ctrl" type="number" min="1" max="30" placeholder="–" hidden>
+          </div>
+        </div>
+        <div style="padding-bottom:0;display:flex;gap:8px;align-items:flex-end">
+          <button id="btnBuild" class="btn btn-accent" data-t="p1.make">만들기</button>
+          <button id="btnWipe"  class="btn btn-red"   data-t="p1.clear">초기화</button>
+        </div>
+      </div>
+
+      <div id="hint" class="hint" style="display:none" data-t="p1.hint"></div>
+      <div class="cell-wrap"><div id="cellGrid"></div></div>
+
+      <div class="acts">
+        <div class="gap"></div>
+        <button class="btn btn-plain js-reset" data-t="home">처음으로</button>
+        <button id="toP2" class="btn btn-accent" disabled><span data-t="go">다음</span> →</button>
+      </div>
+    </section>
+
+    <!-- Phase 2 -->
+    <section id="phase2" class="phase">
+      <div class="ph">
+        <div class="ph-title" data-t="p2.title">이미지 가져오기</div>
+        <div class="ph-desc"  data-t="p2.desc"></div>
+      </div>
+
+      <div id="dropZone" class="drop-zone">
+        <div class="dz-title" data-t="p2.drop">이미지를 드래그하거나</div>
+        <button id="btnBrowse" class="btn btn-plain" data-t="p2.browse">파일 선택</button>
+        <div class="dz-sub" data-t="p2.paste">또는 Ctrl+V로 붙여넣기</div>
+        <input id="filePicker" type="file" accept="image/*" style="display:none">
+      </div>
+
+      <div id="thumbWrap" class="thumb-wrap" style="display:none">
+        <img id="thumbImg" alt="">
+      </div>
+
+      <div class="acts">
+        <div class="gap"></div>
+        <button class="btn btn-plain js-reset" data-t="home">처음으로</button>
+        <button id="toP1b" class="btn btn-plain">← <span data-t="back">이전</span></button>
+        <button id="toP3"  class="btn btn-accent" disabled><span data-t="go">다음</span> →</button>
+      </div>
+    </section>
+
+    <!-- Phase 3 -->
+    <section id="phase3" class="phase">
+      <div class="ph">
+        <div class="ph-title" data-t="p3.title">영역 선택</div>
+        <div class="ph-desc"  data-t="p3.desc"></div>
+      </div>
+
+      <div class="crop-wrap"><canvas id="cropCv"></canvas></div>
+
+      <div class="acts">
+        <div class="gap"></div>
+        <button class="btn btn-plain js-reset" data-t="home">처음으로</button>
+        <button id="toP2b"  class="btn btn-plain">← <span data-t="back">이전</span></button>
+        <button id="btnCut" class="btn btn-accent"><span data-t="p3.cut">잘라내기 & 계속</span> →</button>
+      </div>
+    </section>
+
+    <!-- Phase 4 -->
+    <section id="phase4" class="phase">
+      <div class="ph">
+        <div class="ph-title" data-t="p4.title">분할 결과</div>
+        <div class="ph-desc"  data-t="p4.desc"></div>
+      </div>
+
+      <span class="label" data-t="p4.map" style="display:block;margin-bottom:10px"></span>
+      <div id="mapCv" class="map-row"></div>
+
+      <div class="divider"></div>
+
+      <span class="label" data-t="p4.pick" style="display:block;margin-bottom:10px"></span>
+      <p class="pick-desc" data-th="p4.pickbody"></p>
+      <div id="tileRow" class="tile-row"></div>
+      <div class="warn-box" data-th="p4.caution"></div>
+
+      <div class="acts" style="margin-top:20px">
+        <div class="gap"></div>
+        <button id="toP3b"     class="btn btn-plain">← <span data-t="back">이전</span></button>
+        <button class="btn btn-plain js-reset" data-t="home">처음으로</button>
+        <button id="btnExport" class="btn btn-green" data-t="save">ZIP 저장</button>
+      </div>
+
+      <div class="guide-box">
+        <span class="label" data-t="p4.guide" style="display:block;margin-bottom:8px"></span>
+        <p data-th="p4.guidebody"></p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
