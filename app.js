@@ -1,27 +1,22 @@
-/* ═══════════════════════════════════════════════════════════
-   SCENE-grid — app.js
-═══════════════════════════════════════════════════════════ */
-
-/* ── Locale ─────────────────────────────────────────────── */
 const Locale = (function () {
   const S = {
     ko: {
-      'sub':         '빠른 설정 버튼에 맞게\n이미지를 정확히 분할하세요.',
-      'note':        'GalaxyStore - GoodLock QuickStar 전용 ｜ by Adam',
+      'sub':         'One UI 빠른 설정 버튼에 맞게\n이미지를 정확히 분할하세요.',
+      'note':        'Samsung Galaxy One UI · GoodLock QuickStar 전용',
       'launch':      '시작하기',
-      'p1.title':    '빠른 설정창 영역 그리드 구성',
+      'p1.title':    '그리드 구성',
       'p1.desc':     '패널 크기를 설정하고, 각 버튼 영역을 드래그해서 지정하세요.',
       'p1.rows':     '세로',
       'p1.cols':     '가로',
       'p1.more':     '직접 입력',
-      'p1.make':     '표 만들기',
+      'p1.make':     '만들기',
       'p1.clear':    '초기화',
       'p1.hint':     '드래그로 영역을 선택하고, 선택된 영역을 클릭하면 취소됩니다.',
       'p2.title':    '이미지 가져오기',
       'p2.desc':     '분할할 이미지를 불러오세요.',
       'p2.drop':     '이미지를 드래그하거나',
       'p2.browse':   '파일 선택',
-      'p2.paste':    '또는 PC버전에서 Ctrl+V로 사진을 불러오세요',
+      'p2.paste':    '또는 Ctrl+V로 붙여넣기',
       'p3.title':    '영역 선택',
       'p3.desc':     '그리드 비율에 맞게 잘라낼 영역을 잡아주세요.',
       'p3.cut':      '잘라내기 & 계속',
@@ -30,13 +25,13 @@ const Locale = (function () {
       'p4.map':      '분할 지도',
       'p4.pick':     '타일 유형',
       'p4.pickbody': '<strong>버튼 박스 · 미디어 · 밝기 · 볼륨</strong>에 해당하는 타일을 선택하세요. (투명도 처리에 사용됩니다)',
-      'p4.caution':  '⭐ 미디어 플레이어는 음악 재생 중 음악 앨범 표시 등 이미지가 표시됩니다. 버튼 박스는 확장 시 이미지도 확대됩니다. (기본 화면에서는 상관없음)',
+      'p4.caution':  '⚠ 미디어 플레이어는 음악 재생 중 이미지가 표시되지 않아 권장하지 않습니다. 버튼 박스는 확장 시 이미지도 함께 늘어날 수 있습니다.',
       'p4.guide':    '적용 방법',
-      'p4.guidebody':'ZIP 압축 해제 후 <strong>[GoodLock ▶ QuickStar ▶ 패널 스타일 편집]</strong>에서 각 타일에 이미지를 하나씩 설정해주세요.',
+      'p4.guidebody':'ZIP 압축 해제 후 <strong>GoodLock → QuickStar → 패널 스타일 편집</strong>에서 각 타일에 이미지를 하나씩 넣어주세요.',
       'go':          '다음',
       'back':        '이전',
       'home':        '처음으로',
-      'save':        'ZIP파일로 저장',
+      'save':        'ZIP 저장',
       'step':        '단계',
     },
     en: {
@@ -126,7 +121,7 @@ const Locale = (function () {
     document.querySelectorAll('[data-tpre]').forEach(el => { const v=get(el.dataset.tpre); if(v!=null) el.textContent=v; });
     document.querySelectorAll('.lang-opt').forEach(b => b.classList.toggle('on', b.dataset.l===l));
     document.querySelectorAll('.l-label').forEach(el => el.textContent=LABELS[l]||l);
-    // update step counter
+    
     document.querySelectorAll('.tb-step').forEach(el => {
       const m = el.dataset.phase;
       if (m) el.textContent = `${m} ${get('step')}`;
@@ -156,7 +151,6 @@ const Locale = (function () {
   return { get, apply, mount, cur: ()=>cur };
 })();
 
-/* ── State ──────────────────────────────────────────────── */
 const CG = {
   rows:0, cols:0, regions:[],
   source:null, frame:null,
@@ -164,12 +158,15 @@ const CG = {
   tiles:[],
 };
 
-/* ═══════════════════════════════════════════════════════════
-   GRID BUILDER
-═══════════════════════════════════════════════════════════ */
 const Grid = (function(){
   const PAL = [
-    {fill:'rgba(255,255,255,0.07)',stroke:'rgba(255,255,255,0.55)',glow:'rgba(255,255,255,0.18)'},
+    {fill:'rgba(255,100,100,0.18)', stroke:'#ff6464', glow:'rgba(255,100,100,0.25)'},
+    {fill:'rgba(255,165,60,0.18)',  stroke:'#ffa53c', glow:'rgba(255,165,60,0.25)'},
+    {fill:'rgba(255,220,50,0.18)',  stroke:'#ffdc32', glow:'rgba(255,220,50,0.25)'},
+    {fill:'rgba(80,200,100,0.18)',  stroke:'#50c864', glow:'rgba(80,200,100,0.25)'},
+    {fill:'rgba(60,160,255,0.18)',  stroke:'#3ca0ff', glow:'rgba(60,160,255,0.25)'},
+    {fill:'rgba(120,100,255,0.18)', stroke:'#7864ff', glow:'rgba(120,100,255,0.25)'},
+    {fill:'rgba(210,100,255,0.18)', stroke:'#d264ff', glow:'rgba(210,100,255,0.25)'},
   ];
   let occ=[], anchor=null, live=false, hovSet=new Set();
   const pal = r => PAL[(r.id-1)%PAL.length];
@@ -202,12 +199,12 @@ const Grid = (function(){
       const id=occ[r][c]; if(!id) return;
       const reg=CG.regions.find(x=>x.id===id); if(!reg) return;
       const p=pal(reg); el.style.background=p.fill;
-      const sh=[],W=2;
+      const sh=[],W=3;
       if(r===reg.r0)           sh.push(`inset 0 ${W}px 0 0 ${p.stroke}`);
       if(r===reg.r0+reg.rs-1)  sh.push(`inset 0 -${W}px 0 0 ${p.stroke}`);
       if(c===reg.c0)           sh.push(`inset ${W}px 0 0 0 ${p.stroke}`);
       if(c===reg.c0+reg.cs-1)  sh.push(`inset -${W}px 0 0 0 ${p.stroke}`);
-      if(sh.length) el.style.boxShadow=sh.join(',')+`,0 0 10px 1px ${p.glow}`;
+      if(sh.length) el.style.boxShadow=sh.join(',');
       if(r===reg.r0&&c===reg.c0){
         const n=document.createElement('span'); n.className='c-num'; n.style.color=p.stroke; n.textContent=reg.id; el.appendChild(n);
       }
@@ -283,9 +280,6 @@ const Grid = (function(){
   return {init,wipe};
 })();
 
-/* ═══════════════════════════════════════════════════════════
-   IMPORTER
-═══════════════════════════════════════════════════════════ */
 const Importer = (function(){
   function load(file){
     if(!file||!file.type.startsWith('image/')) return;
@@ -319,9 +313,6 @@ const Importer = (function(){
   return {init};
 })();
 
-/* ═══════════════════════════════════════════════════════════
-   CROPPER
-═══════════════════════════════════════════════════════════ */
 const Cropper = (function(){
   const HIT=14,HS=9,MIN=20;
   let cv,cx,sc=1,grab=null,orig=null;
@@ -398,9 +389,6 @@ const Cropper = (function(){
   return{init,commit};
 })();
 
-/* ═══════════════════════════════════════════════════════════
-   RESULTS
-═══════════════════════════════════════════════════════════ */
 const Results = (function(){
   const RING=['#4f8ef7','#f7834f','#34c97a','#f7d24f','#c97af7','#f7524f','#4ff7d9','#f74fb0'];
 
@@ -488,9 +476,6 @@ const Results = (function(){
   return{init,exportZip};
 })();
 
-/* ═══════════════════════════════════════════════════════════
-   ROUTER
-═══════════════════════════════════════════════════════════ */
 (function(){
   let phase=1,mute=false;
   const push=s=>{if(!mute)history.pushState(s,'');};
@@ -501,7 +486,7 @@ const Results = (function(){
   function go(n){
     phase=n;
     [1,2,3,4].forEach(i=>{const el=document.getElementById('phase'+i);if(el)el.classList.toggle('on',i===n);});
-    // update topbar step
+
     document.querySelectorAll('.tb-step').forEach(el=>{
       el.dataset.phase=n;
       el.textContent=`${n} ${Locale.get('step')}`;
