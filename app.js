@@ -3,6 +3,8 @@ const Locale = (function () {
     ko: {
       'sub':         'One UI 빠른 설정 버튼에 맞게\n이미지를 정확히 분할하세요.',
       'note':        'Samsung Galaxy One UI · GoodLock QuickStar 전용',
+      'ba.before':   'BEFORE',
+      'ba.after':    'AFTER',
       'launch':      '시작하기',
       'p1.title':    '그리드 구성',
       'p1.desc':     '패널 크기를 설정하고, 각 버튼 영역을 드래그해서 지정하세요.',
@@ -37,6 +39,8 @@ const Locale = (function () {
     en: {
       'sub':         'Slice your image to fit\nthe One UI Quick Settings buttons.',
       'note':        'Samsung Galaxy One UI · GoodLock QuickStar only',
+      'ba.before':   'BEFORE',
+      'ba.after':    'AFTER',
       'launch':      'Get started',
       'p1.title':    'Build grid',
       'p1.desc':     'Set the panel size and drag to define each button region.',
@@ -71,6 +75,8 @@ const Locale = (function () {
     ja: {
       'sub':         'One UI クイック設定ボタンに合わせて\n画像をきれいに分割します。',
       'note':        'Samsung Galaxy One UI · GoodLock QuickStar 専用',
+      'ba.before':   'BEFORE',
+      'ba.after':    'AFTER',
       'launch':      'はじめる',
       'p1.title':    'グリッド設定',
       'p1.desc':     'パネルサイズを設定し、各ボタン領域をドラッグで指定してください。',
@@ -476,6 +482,60 @@ const Results = (function(){
   return{init,exportZip};
 })();
 
+const BASlider = (function(){
+  function init(){
+    const root = document.getElementById('baSlider');
+    if(!root) return;
+    const clip   = root.querySelector('.ba-clip');
+    const handle = document.getElementById('baHandle');
+    const beforeImg = clip.querySelector('.ba-img');
+
+    let pct = 55; // starting split, matches CSS default
+    let dragging = false;
+
+    function syncImgWidth(){
+      // keep the cropped image at the slider's full rendered width
+      // so narrowing the clip reveals a crop, not a scaled-down image
+      const w = root.getBoundingClientRect().width;
+      beforeImg.style.width = w + 'px';
+    }
+    function apply(){
+      clip.style.width = pct + '%';
+      handle.style.left = pct + '%';
+    }
+    function setFromClientX(x){
+      const r = root.getBoundingClientRect();
+      pct = Math.min(96, Math.max(4, ((x - r.left) / r.width) * 100));
+      apply();
+    }
+
+    function down(e){
+      dragging = true;
+      root.classList.add('dragging');
+      setFromClientX((e.touches?e.touches[0].clientX:e.clientX));
+    }
+    function move(e){
+      if(!dragging) return;
+      e.preventDefault();
+      setFromClientX((e.touches?e.touches[0].clientX:e.clientX));
+    }
+    function up(){ dragging=false; root.classList.remove('dragging'); }
+
+    root.addEventListener('mousedown', down);
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+    root.addEventListener('touchstart', down, {passive:true});
+    window.addEventListener('touchmove', move, {passive:false});
+    window.addEventListener('touchend', up);
+    window.addEventListener('resize', syncImgWidth);
+
+    if(beforeImg.complete) syncImgWidth();
+    else beforeImg.addEventListener('load', syncImgWidth);
+    apply();
+  }
+  return {init};
+})();
+
 (function(){
   let phase=1,mute=false;
   const push=s=>{if(!mute)history.pushState(s,'');};
@@ -505,7 +565,7 @@ const Results = (function(){
 
   document.addEventListener('DOMContentLoaded',()=>{
     Locale.mount(); Locale.apply(Locale.cur());
-    Grid.init(); Importer.init();
+    Grid.init(); Importer.init(); BASlider.init();
 
     document.getElementById('btnLaunch').addEventListener('click',()=>{showWork();go(1);});
     document.getElementById('toP2').addEventListener('click',()=>go(2));

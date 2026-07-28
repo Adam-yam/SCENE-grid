@@ -22,14 +22,39 @@
     </div>
   </div>
 
-  <h1 class="w-wordmark t1">SCENE-grid</h1>
-  <p  class="w-desc t2" data-tpre="sub"></p>
+  <div class="w-body">
+    <div class="w-textcol">
+      <h1 class="w-wordmark t1">SCENE-grid</h1>
+      <p  class="w-desc t2" data-tpre="sub"></p>
 
-  <div class="w-actions t3">
-    <button id="btnLaunch" class="btn btn-accent w-start" data-t="launch">시작하기</button>
+      <div class="w-actions t3">
+        <button id="btnLaunch" class="btn btn-accent w-start" data-t="launch">시작하기</button>
+      </div>
+
+      <div class="w-note t4" data-th="note"></div>
+    </div>
+
+    <div class="w-visual t3">
+      <div id="baSlider" class="ba-slider">
+        <img class="ba-img ba-after"  src="pics/After.png"  alt="After">
+        <div class="ba-clip">
+          <img class="ba-img ba-before" src="pics/Before.png" alt="Before">
+        </div>
+        <div id="baHandle" class="ba-handle">
+          <div class="ba-handle-grip">
+            <svg width="10" height="14" viewBox="0 0 10 14" fill="none">
+              <path d="M7 1.5L1.5 7L7 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <svg width="10" height="14" viewBox="0 0 10 14" fill="none">
+              <path d="M3 1.5L8.5 7L3 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <span class="ba-tag ba-tag-before" data-t="ba.before">BEFORE</span>
+        <span class="ba-tag ba-tag-after"  data-t="ba.after">AFTER</span>
+      </div>
+    </div>
   </div>
-
-  <div class="w-note t4" data-th="note"></div>
 
 </section>
 
