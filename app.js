@@ -1,8 +1,8 @@
 const Locale = (function () {
   const S = {
     ko: {
-      'sub':         'One UI 빠른 설정 버튼에 맞게\n이미지를 정확히 분할하세요.',
-      'note':        'Samsung Galaxy One UI · GoodLock QuickStar 전용',
+      'sub':         'One UI 빠른 설정 패널에 맞춰\n이미지를 정확한 격자로 나눠드립니다.',
+      'note':        'Galaxy One UI · GoodLock QuickStar 전용 도구',
       'ba.before':   'BEFORE',
       'ba.after':    'AFTER',
       'launch':      '시작하기',
@@ -37,8 +37,8 @@ const Locale = (function () {
       'step':        '단계',
     },
     en: {
-      'sub':         'Slice your image to fit\nthe One UI Quick Settings buttons.',
-      'note':        'Samsung Galaxy One UI · GoodLock QuickStar only',
+      'sub':         'Cut one image into a precise grid\nfor the One UI Quick Settings panel.',
+      'note':        'Built for Galaxy One UI · GoodLock QuickStar',
       'ba.before':   'BEFORE',
       'ba.after':    'AFTER',
       'launch':      'Get started',
@@ -73,8 +73,8 @@ const Locale = (function () {
       'step':        'of 4',
     },
     ja: {
-      'sub':         'One UI クイック設定ボタンに合わせて\n画像をきれいに分割します。',
-      'note':        'Samsung Galaxy One UI · GoodLock QuickStar 専用',
+      'sub':         'One UI クイック設定パネルに合わせて\n画像を正確なグリッドに分割します。',
+      'note':        'Galaxy One UI · GoodLock QuickStar 専用ツール',
       'ba.before':   'BEFORE',
       'ba.after':    'AFTER',
       'launch':      'はじめる',
@@ -550,6 +550,9 @@ const BASlider = (function(){
     document.querySelectorAll('.tb-step').forEach(el=>{
       el.dataset.phase=n;
       el.textContent=`${n} ${Locale.get('step')}`;
+    });
+    document.querySelectorAll('.tb-progress').forEach(p=>{
+      p.querySelectorAll('.tick').forEach((t,i)=>t.classList.toggle('on', i<n));
     });
     if(n===3) Cropper.init();
     if(n===4) Results.init();
